@@ -20,6 +20,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,10 +49,25 @@ class HomeActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnNewProject).setOnClickListener { promptNewProject() }
         findViewById<Button>(R.id.btnOpenSandbox).setOnClickListener { openEditor() }
         findViewById<Button>(R.id.btnImport).setOnClickListener { openEditor() }
+        findViewById<View>(R.id.githubCard).setOnClickListener { openGitHubRepo() }
 
         setupQuickTools()
         renderRecentProjects()
         renderTemplates()
+    }
+
+    companion object {
+        private const val GITHUB_REPO_URL = "https://github.com/omorfarukhr/TwinPane"
+        private const val AUTHOR_NAME = "Omor Faruk (@omorfarukhr)"
+    }
+
+    private fun openGitHubRepo() {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, GITHUB_REPO_URL.toUri())
+            startActivity(intent)
+        } catch (_: Exception) {
+            Toast.makeText(this, "Could not open browser", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
@@ -81,7 +97,7 @@ class HomeActivity : AppCompatActivity() {
                 setPadding(0, dp(12), 0, dp(4))
             }
             val version = TextView(this@HomeActivity).apply {
-                text = "v1.0.0 · Mobile Web Development Hub\nBuilt with Kotlin & Material 3"
+                text = "v1.0.0 · Created by $AUTHOR_NAME\n$GITHUB_REPO_URL"
                 textSize = 12f
                 setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                 gravity = Gravity.CENTER

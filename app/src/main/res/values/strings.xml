@@ -27,4 +27,10 @@
     <string name="menu_settings_view">Settings &amp; View</string>
     <string name="action_main_menu">Menu</string>
     <string name="action_home">Home</string>
+
+    <!-- GitHub Banner -->
+    <string name="github_banner_author">Developed by Omor Faruk</string>
+    <string name="github_banner_support">⭐ Star &amp; Support TwinPane on GitHub</string>
+    <string name="github_banner_star">★ Star</string>
+    <string name="desc_github_logo">GitHub Logo</string>
 </resources>
