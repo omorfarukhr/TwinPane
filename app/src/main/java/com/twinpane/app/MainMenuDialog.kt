@@ -18,6 +18,8 @@ import java.util.ArrayDeque
 
 data class MenuItemData(
     val title: String,
+    val subtitle: String? = null,
+    val icon: String? = null,
     val isSubMenu: Boolean = false,
     val isChecked: Boolean? = null,
     val subItems: List<MenuItemData>? = null,
@@ -79,7 +81,7 @@ object MainMenuDialog {
 
         val listView = ListView(context).apply {
             dividerHeight = 0
-            setPadding(dp(8), dp(4), dp(8), dp(8))
+            setPadding(dp(12), dp(8), dp(12), dp(12))
         }
 
         val root = LinearLayout(context).apply {
@@ -157,20 +159,55 @@ object MainMenuDialog {
             val container = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                setPadding(dp(12), dp(12), dp(12), dp(12))
+                background = ContextCompat.getDrawable(context, R.drawable.bg_card_container)
+                setPadding(dp(14), dp(12), dp(14), dp(12))
+
+                val params = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                ).apply {
+                    setMargins(0, 0, 0, dp(8))
+                }
+                layoutParams = params
+
                 val ripple = TypedValue().also {
                     context.theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
                 }.resourceId
                 setBackgroundResource(ripple)
             }
 
-            val titleView = TextView(context).apply {
-                text = item.title
-                textSize = 15f
-                setTextColor(ContextCompat.getColor(context, R.color.text))
-                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+            if (!item.icon.isNullOrBlank()) {
+                val iconTv = TextView(context).apply {
+                    text = item.icon
+                    textSize = 18f
+                    setPadding(0, 0, dp(12), 0)
+                }
+                container.addView(iconTv)
             }
-            container.addView(titleView)
+
+            val infoLayout = LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+
+                val titleView = TextView(context).apply {
+                    text = item.title
+                    textSize = 15f
+                    setTextColor(ContextCompat.getColor(context, R.color.text))
+                    typeface = Typeface.DEFAULT_BOLD
+                }
+                addView(titleView)
+
+                if (!item.subtitle.isNullOrBlank()) {
+                    val subView = TextView(context).apply {
+                        text = item.subtitle
+                        textSize = 12f
+                        setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
+                        setPadding(0, dp(2), 0, 0)
+                    }
+                    addView(subView)
+                }
+            }
+            container.addView(infoLayout)
 
             if (item.isChecked != null) {
                 val checkView = TextView(context).apply {
