@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">TwinPane</string>
+    <string name="app_ide_title">%1$s IDE</string>
+    <string name="problem_summary_format">%1$s  ·  %2$s: %3$s</string>
+    <string name="toggle_fullscreen">Toggle Fullscreen</string>
+    <string name="action_format">Format Code</string>
+    <string name="action_cdn">Add Library (CDN)</string>
+    <string name="action_color_picker">Color Picker</string>
+    <string name="desc_viewport">Viewport Switcher</string>
+    <string name="console_prompt">> </string>
+    <string name="hint_execute_js">Execute JavaScript&#8230;</string>
+    <string name="btn_run_js">Run</string>
+    <string name="action_inspect">Inspect Element</string>
+    <string name="action_css_gen">CSS Generator</string>
+    <string name="action_emmet">Emmet Expand</string>
+    <string name="action_insert_image">Insert Image / Asset</string>
+    <string name="action_storage">Web Storage &amp; Cookies</string>
+    <string name="action_web_server">Live Wi-Fi Server</string>
+    <string name="action_find">Find &amp; Replace</string>
+    <string name="action_permissions">Web API Permissions</string>
+
+    <!-- Sub-menu Section Headers -->
+    <string name="menu_code_tools">Code Tools</string>
+    <string name="menu_design_assets">Design &amp; Assets</string>
+    <string name="menu_devtools">DevTools &amp; Debug</string>
+    <string name="menu_share_server">Share &amp; Server</string>
+    <string name="menu_settings_view">Settings &amp; View</string>
+    <string name="action_main_menu">Menu</string>
+    <string name="action_home">Home</string>
+</resources>

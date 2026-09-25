@@ -1,0 +1,15 @@
+<resources>
+    <style name="Base.Theme.TwinPane" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_2</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_2</item>
+        <item name="colorOnSurface">@color/text</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="materialCalendarTheme">@style/Theme.Material3.Dark</item>
+    </style>
+
+    <style name="Theme.TwinPane" parent="Base.Theme.TwinPane" />
+</resources>

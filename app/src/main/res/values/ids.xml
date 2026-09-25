@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="action_main_menu" type="id" />
+    <item name="action_new_project" type="id" />
+    <item name="action_rename_project" type="id" />
+    <item name="action_import_html" type="id" />
+    <item name="action_import_files" type="id" />
+    <item name="action_import_zip" type="id" />
+    <item name="action_export_zip" type="id" />
+    <item name="action_export_folder" type="id" />
+    <item name="action_export_html" type="id" />
+</resources>
