@@ -63,9 +63,10 @@ class ProjectFiles(
 
     val projectName: String get() = prefs.getString("name", null) ?: DEFAULT_NAME
 
-    private fun setName(name: String) {
-        prefs.edit { putString("name", name) }
-        onNameChanged(name)
+    fun setName(name: String) {
+        val safe = safeName(name)
+        prefs.edit { putString("name", safe) }
+        onNameChanged(safe)
     }
 
     // ---------- File pickers (SECURITY: Storage Access Framework, কোনো permission লাগে না) ----------

@@ -113,8 +113,17 @@ class HomeActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun openEditor() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun openEditor(
+        action: String? = null,
+        projectName: String? = null,
+        templateName: String? = null,
+    ) {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            if (action != null) putExtra("action", action)
+            if (projectName != null) putExtra("project_name", projectName)
+            if (templateName != null) putExtra("template_name", templateName)
+        }
+        startActivity(intent)
     }
 
     private fun promptNewProject() {
@@ -130,7 +139,7 @@ class HomeActivity : AppCompatActivity() {
                 val name = input.text.toString().trim()
                 if (name.isNotEmpty()) {
                     saveProjectName(name)
-                    openEditor()
+                    openEditor(action = "NEW_PROJECT", projectName = name)
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -208,7 +217,7 @@ class HomeActivity : AppCompatActivity() {
                     textSize = 12f
                     setTextColor(ContextCompat.getColor(context, R.color.accent))
                     setBackgroundResource(rippleBorderless)
-                    setOnClickListener { openEditor() }
+                    setOnClickListener { openEditor(action = "OPEN_PROJECT", projectName = proj) }
                 }
 
                 val btnDelete = ImageButton(context).apply {
@@ -218,6 +227,8 @@ class HomeActivity : AppCompatActivity() {
                     setPadding(dp(6), dp(6), dp(6), dp(6))
                     setOnClickListener { deleteProject(proj) }
                 }
+
+                setOnClickListener { openEditor(action = "OPEN_PROJECT", projectName = proj) }
 
                 addView(icon)
                 addView(info)
@@ -275,7 +286,13 @@ class HomeActivity : AppCompatActivity() {
                     setTextColor(ContextCompat.getColor(context, R.color.accent))
                 }
 
-                setOnClickListener { openEditor() }
+                setOnClickListener {
+                    openEditor(
+                        action = "LOAD_TEMPLATE",
+                        templateName = tmpl.name,
+                        projectName = tmpl.name
+                    )
+                }
 
                 addView(badge)
                 addView(nameTv)
@@ -287,17 +304,17 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupQuickTools() {
         findViewById<View>(R.id.toolCssGen).setOnClickListener {
-            CssGenerator.showDialog(this) { openEditor() }
+            CssGenerator.showDialog(this) { openEditor(action = "OPEN_PROJECT") }
         }
         findViewById<View>(R.id.toolCdn).setOnClickListener {
-            openEditor()
+            openEditor(action = "OPEN_PROJECT")
         }
         findViewById<View>(R.id.toolServer).setOnClickListener {
             val ip = LocalWebServer.getLocalIpAddress() ?: "127.0.0.1"
             Toast.makeText(this, "Local Wi-Fi IP: $ip (Open editor to start server)", Toast.LENGTH_LONG).show()
         }
         findViewById<View>(R.id.toolStorage).setOnClickListener {
-            openEditor()
+            openEditor(action = "OPEN_PROJECT")
         }
     }
 }

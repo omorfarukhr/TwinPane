@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
         val d = Templates.default
         val defaults = listOf(d.html, d.css, d.js)
-        KEYS.forEachIndexed { i, key -> code.add(prefs.getString(key, null) ?: defaults[i]) }
+        handleIntent(intent, defaults)
         autoRun = prefs.getBoolean("auto_run", true)
         sideBySidePref = prefs.getBoolean("side_by_side", false)
         splitRatio = prefs.getFloat("split_ratio", 0.5f)
@@ -1015,10 +1015,72 @@ class MainActivity : AppCompatActivity() {
         MainMenuDialog.show(this, mainMenuItems)
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val d = Templates.default
+        val defaults = listOf(d.html, d.css, d.js)
+        handleIntent(intent, defaults)
+        switching = true
+        editor.setText(code[currentTab])
+        switching = false
+        highlightNow()
+        render()
+    }
+
+    private fun handleIntent(intent: Intent, defaults: List<String>) {
+        val action = intent.getStringExtra("action")
+        val projName = intent.getStringExtra("project_name")
+        val templateName = intent.getStringExtra("template_name")
+
+        if (projName != null) {
+            files.setName(projName)
+        }
+
+        when (action) {
+            "NEW_PROJECT" -> {
+                code.clear()
+                code.addAll(defaults)
+                saveCode()
+            }
+            "LOAD_TEMPLATE" -> {
+                val customTemplates = CustomTemplatesManager.getCustomTemplates(this)
+                val allTemplates = Templates.all + customTemplates
+                val tmpl = allTemplates.find { it.name.equals(templateName, ignoreCase = true) } ?: Templates.default
+                if (projName == null) files.setName(tmpl.name)
+                code.clear()
+                code.addAll(listOf(tmpl.html, tmpl.css, tmpl.js))
+                saveCode()
+            }
+            "IMPORT" -> {
+                loadSavedCodeForCurrentProject(defaults)
+                handler.postDelayed({ files.handleMenu(R.id.action_import_files) }, 300)
+            }
+            else -> {
+                loadSavedCodeForCurrentProject(defaults)
+            }
+        }
+    }
+
+    private fun loadSavedCodeForCurrentProject(defaults: List<String>) {
+        val curName = files.projectName
+        code.clear()
+        KEYS.forEachIndexed { i, key ->
+            val saved = prefs.getString("${curName}_$key", null) ?: prefs.getString(key, null) ?: defaults[i]
+            code.add(saved)
+        }
+    }
+
     // ---------- Save & cleanup ----------
 
     private fun saveCode() {
-        prefs.edit { KEYS.forEachIndexed { i, key -> putString(key, code[i]) } }
+        val curName = files.projectName
+        prefs.edit {
+            KEYS.forEachIndexed { i, key ->
+                putString(key, code[i])
+                putString("${curName}_$key", code[i])
+            }
+        }
     }
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
