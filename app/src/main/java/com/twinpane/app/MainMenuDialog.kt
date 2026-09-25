@@ -23,6 +23,7 @@ data class MenuItemData(
     val isSubMenu: Boolean = false,
     val isChecked: Boolean? = null,
     val subItems: List<MenuItemData>? = null,
+    val dismissOnClick: Boolean = true,
     val action: (() -> Unit)? = null,
 )
 
@@ -107,8 +108,12 @@ object MainMenuDialog {
                     stack.push(item.title to item.subItems)
                     updateUI()
                 } else {
-                    dialog.dismiss()
                     item.action?.invoke()
+                    if (item.dismissOnClick) {
+                        dialog.dismiss()
+                    } else {
+                        updateUI()
+                    }
                 }
             }
         }

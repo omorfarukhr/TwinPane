@@ -90,6 +90,9 @@ class MainActivity : AppCompatActivity() {
     private var jsLineOffset = 0
 
     private var viewportMode = 0 // 0 = Fluid, 1 = Mobile (375dp), 2 = Tablet (600dp)
+    private var webGeoEnabled = true
+    private var webCamEnabled = true
+    private var webPopupEnabled = false
 
     private val staticProblems = mutableListOf<Problem>()
     private val runtimeProblems = mutableListOf<Problem>()
@@ -931,20 +934,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openMainMenu() {
+        // --- 1. Project Sub-menu ---
+        val importSubItems = listOf(
+            MenuItemData(icon = "📄", title = "Import Single HTML File", subtitle = "Load a standalone .html file into project", action = { files.handleMenu(R.id.action_import_html) }),
+            MenuItemData(icon = "📁", title = "Import HTML + CSS + JS", subtitle = "Load separate web source files", action = { files.handleMenu(R.id.action_import_files) }),
+            MenuItemData(icon = "📦", title = "Import ZIP Project Archive", subtitle = "Extract and load a .zip project archive", action = { files.handleMenu(R.id.action_import_zip) }),
+        )
+
         val projectSubItems = listOf(
             MenuItemData(icon = "➕", title = "New Project", subtitle = "Create a new web application workspace", action = { files.handleMenu(R.id.action_new_project) }),
             MenuItemData(icon = "✏️", title = "Rename Project", subtitle = "Change current project title", action = { files.handleMenu(R.id.action_rename_project) }),
-            MenuItemData(icon = "📄", title = "Import HTML File", subtitle = "Load a standalone .html file", action = { files.handleMenu(R.id.action_import_html) }),
-            MenuItemData(icon = "📁", title = "Import HTML + CSS + JS", subtitle = "Load separate web source files", action = { files.handleMenu(R.id.action_import_files) }),
-            MenuItemData(icon = "📦", title = "Import ZIP Project", subtitle = "Extract and load a .zip archive", action = { files.handleMenu(R.id.action_import_zip) }),
+            MenuItemData(icon = "📁", title = "Import Code / Project", subtitle = "Load HTML, CSS, JS, or ZIP archive", isSubMenu = true, subItems = importSubItems),
         )
 
+        // --- 2. Export Sub-menu ---
         val exportSubItems = listOf(
             MenuItemData(icon = "📦", title = "Export as ZIP", subtitle = "Bundle code into a downloadable .zip archive", action = { files.handleMenu(R.id.action_export_zip) }),
             MenuItemData(icon = "📁", title = "Export as Separate Files", subtitle = "Save HTML, CSS, JS files to folder", action = { files.handleMenu(R.id.action_export_folder) }),
             MenuItemData(icon = "📄", title = "Export as Single HTML", subtitle = "Bundle code into a single .html file", action = { files.handleMenu(R.id.action_export_html) }),
         )
 
+        // --- 3. Templates Sub-menu ---
+        val customTemplates = CustomTemplatesManager.getCustomTemplates(this)
+        val templateSubItems = mutableListOf<MenuItemData>()
+        templateSubItems.add(
+            MenuItemData(icon = "➕", title = "Save Current Code as Custom Template", subtitle = "Save current HTML, CSS, JS as reusable template", action = { saveCustomTemplateDialog() })
+        )
+        (Templates.all + customTemplates).distinctBy { it.name }.forEach { tmpl ->
+            val isCustom = tmpl in customTemplates
+            templateSubItems.add(
+                MenuItemData(
+                    icon = if (isCustom) "⭐" else "📑",
+                    title = tmpl.name,
+                    subtitle = if (isCustom) "Saved Custom Template" else "Built-in Starter Template",
+                    action = { confirmReplace { loadTemplate(tmpl) } }
+                )
+            )
+        }
+
+        // --- 4. Code Tools Sub-menu ---
         val codeToolsSubItems = listOf(
             MenuItemData(icon = "🧹", title = "Format Code", subtitle = "Beautify & auto-indent HTML, CSS, JS", action = { formatCurrentCode() }),
             MenuItemData(icon = "🔍", title = "Find & Replace", subtitle = "Search keywords or regex and replace text", action = {
@@ -961,23 +989,117 @@ class MainActivity : AppCompatActivity() {
             MenuItemData(icon = "🎨", title = "Color Picker", subtitle = "Select Hex colors from visual Material palette", action = { showColorPicker() }),
         )
 
+        // --- 5. CSS Generator Nested Sub-menus ---
+        val flexboxSubItems = CssGenerator.flexboxPresets.map { (title, css) ->
+            MenuItemData(icon = "📐", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+        }
+        val shadowSubItems = CssGenerator.shadowPresets.map { (title, css) ->
+            MenuItemData(icon = "🔳", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+        }
+        val gradientSubItems = CssGenerator.gradientPresets.map { (title, css) ->
+            MenuItemData(icon = "🌈", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+        }
+
+        val cssGenSubItems = listOf(
+            MenuItemData(icon = "📐", title = "Flexbox & Grid Layouts", subtitle = "Center alignment, Space between, Grid 2 cols", isSubMenu = true, subItems = flexboxSubItems),
+            MenuItemData(icon = "🔳", title = "Box Shadows & Glassmorphism", subtitle = "Soft elevation, Glow purple, Glass blur", isSubMenu = true, subItems = shadowSubItems),
+            MenuItemData(icon = "🌈", title = "Gradients", subtitle = "Cyberpunk sunset, Neon emerald, Midnight blue", isSubMenu = true, subItems = gradientSubItems),
+        )
+
+        val iconMap = mapOf(
+            "Bootstrap 5.3" to "🅱️",
+            "Tailwind CSS (CDN)" to "🎨",
+            "Font Awesome 6" to "🅰️",
+            "Animate.css" to "✨",
+            "Google Fonts (Poppins)" to "🔤",
+            "jQuery 3.7" to "💛",
+            "Vue.js 3" to "💚",
+            "Chart.js" to "📊",
+            "SweetAlert2" to "🔔",
+        )
+        val cdnSubItems = CdnLibraries.items.map { item ->
+            MenuItemData(
+                icon = iconMap[item.name] ?: "📦",
+                title = item.name,
+                subtitle = item.description,
+                action = {
+                    val (updatedHtml, injected) = CdnLibraries.injectIntoHtml(code[0], item.htmlCode)
+                    if (injected) {
+                        code[0] = updatedHtml
+                        if (currentTab == 0) {
+                            switching = true
+                            editor.setText(code[0])
+                            switching = false
+                            highlightNow()
+                        }
+                        render()
+                        saveCode()
+                        Toast.makeText(this, "Added ${item.name}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "${item.name} is already in HTML", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
+
         val designSubItems = listOf(
-            MenuItemData(icon = "🎨", title = "CSS Generator", subtitle = "Visual builders for Flexbox, Shadow, Gradients", action = { CssGenerator.showDialog(this) { css -> insertText(css) } }),
-            MenuItemData(icon = "📦", title = "Add Library (CDN)", subtitle = "Inject Bootstrap, Tailwind, Vue, jQuery, FontAwesome", action = { showCdnLibraries() }),
+            MenuItemData(icon = "🎨", title = "CSS Generator", subtitle = "Visual builders for Flexbox, Shadow, Gradients", isSubMenu = true, subItems = cssGenSubItems),
+            MenuItemData(icon = "📦", title = "Add Library (CDN)", subtitle = "Inject Bootstrap, Tailwind, Vue, jQuery, FontAwesome", isSubMenu = true, subItems = cdnSubItems),
             MenuItemData(icon = "🖼️", title = "Insert Image / Asset", subtitle = "Convert gallery image to Base64 img tag", action = { imagePickerLauncher.launch("image/*") }),
+        )
+
+        // --- 6. Web Permissions Sub-menu ---
+        val webPermissionsSubItems = listOf(
+            MenuItemData(
+                icon = "📍",
+                title = "Geolocation API",
+                subtitle = "Allow HTML5 location requests in preview",
+                isChecked = webGeoEnabled,
+                dismissOnClick = false,
+                action = {
+                    webGeoEnabled = !webGeoEnabled
+                    preview?.settings?.setGeolocationEnabled(webGeoEnabled)
+                    Toast.makeText(this, if (webGeoEnabled) "Geolocation Enabled" else "Geolocation Disabled", Toast.LENGTH_SHORT).show()
+                }
+            ),
+            MenuItemData(
+                icon = "📷",
+                title = "Camera & Microphone",
+                subtitle = "Allow WebRTC audio & video streams",
+                isChecked = webCamEnabled,
+                dismissOnClick = false,
+                action = {
+                    webCamEnabled = !webCamEnabled
+                    Toast.makeText(this, if (webCamEnabled) "Camera/Mic Allowed" else "Camera/Mic Blocked", Toast.LENGTH_SHORT).show()
+                }
+            ),
+            MenuItemData(
+                icon = "🪟",
+                title = "JavaScript Popups",
+                subtitle = "Allow window.open popup windows",
+                isChecked = webPopupEnabled,
+                dismissOnClick = false,
+                action = {
+                    webPopupEnabled = !webPopupEnabled
+                    preview?.settings?.javaScriptCanOpenWindowsAutomatically = webPopupEnabled
+                    Toast.makeText(this, if (webPopupEnabled) "Popups Allowed" else "Popups Blocked", Toast.LENGTH_SHORT).show()
+                }
+            )
         )
 
         val devToolsSubItems = listOf(
             MenuItemData(icon = "🔍", title = "Inspect Element", subtitle = "Click elements in live preview to inspect markup", action = { toggleDomInspector() }),
             MenuItemData(icon = "💾", title = "Web Storage & Cookies", subtitle = "Inspect and clear localStorage, sessionStorage", action = { StorageInspectorDialog.show(this, preview) { render() } }),
-            MenuItemData(icon = "🔒", title = "Web API Permissions", subtitle = "Configure Geolocation, Camera/Mic, JS popups", action = { showWebPermissionsDialog() }),
+            MenuItemData(icon = "🔒", title = "Web API Permissions", subtitle = "Configure Geolocation, Camera/Mic, JS popups", isSubMenu = true, subItems = webPermissionsSubItems),
         )
 
+        // --- 7. Share & Server Sub-menu ---
         val shareServerSubItems = listOf(
             MenuItemData(icon = "🌐", title = "Live Wi-Fi Server", subtitle = "Host website on local Wi-Fi with QR Code", action = { toggleLocalWebServer() }),
             MenuItemData(icon = "📤", title = "Share as HTML", subtitle = "Share single bundled HTML file via intent", action = { shareHtml() }),
         )
 
+        // --- 8. Settings & View Sub-menu ---
         val settingsViewSubItems = listOf(
             MenuItemData(
                 icon = "📐",
@@ -1012,9 +1134,9 @@ class MainActivity : AppCompatActivity() {
             MenuItemData(icon = "📁", title = "Project", subtitle = "Create, rename, import projects", isSubMenu = true, subItems = projectSubItems),
             // 2. Export
             MenuItemData(icon = "📤", title = "Export", subtitle = "Export project as ZIP, HTML, or files", isSubMenu = true, subItems = exportSubItems),
-            // 3. Templates (Directly below Export)
-            MenuItemData(icon = "📑", title = "Templates", subtitle = "Starter templates & saved custom templates", action = { showTemplates() }),
-            // 4. Reset code (Directly below Templates)
+            // 3. Templates
+            MenuItemData(icon = "📑", title = "Templates", subtitle = "Starter templates & saved custom templates", isSubMenu = true, subItems = templateSubItems),
+            // 4. Reset Code
             MenuItemData(icon = "🔄", title = "Reset Code", subtitle = "Reset HTML, CSS, JS to default code", action = { confirmReplace { loadTemplate(Templates.default) } }),
             // 5. Code Tools
             MenuItemData(icon = "🛠️", title = "Code Tools", subtitle = "Format, Find & Replace, Emmet, Color Picker", isSubMenu = true, subItems = codeToolsSubItems),
