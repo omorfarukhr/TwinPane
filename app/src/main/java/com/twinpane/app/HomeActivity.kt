@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -127,14 +126,11 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun promptNewProject() {
-        val input = EditText(this).apply {
-            hint = "My Web App"
-            setSingleLine()
-        }
+        val (container, input) = DialogUiHelper.createStyledInput(this, "My Web App")
         MaterialAlertDialogBuilder(this)
             .setTitle("New Project")
             .setMessage("Enter project name:")
-            .setView(input)
+            .setView(container)
             .setPositiveButton("Create") { _, _ ->
                 val name = input.text.toString().trim()
                 if (name.isNotEmpty()) {
@@ -303,22 +299,12 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun showImportOptionsDialog() {
-        val options = arrayOf(
-            "📄 Import Single HTML File",
-            "📁 Import HTML + CSS + JS Files",
-            "📦 Import ZIP Project Archive"
+        val items = listOf(
+            CustomListItem("📄", "Import Single HTML File", "Select a standalone .html file") { openEditor(action = "IMPORT_SINGLE") },
+            CustomListItem("📁", "Import HTML + CSS + JS Files", "Select multiple .html, .css, .js files") { openEditor(action = "IMPORT_FILES") },
+            CustomListItem("📦", "Import ZIP Project Archive", "Extract and load a .zip project") { openEditor(action = "IMPORT_ZIP") },
         )
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Import Code / Project")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> openEditor(action = "IMPORT_SINGLE")
-                    1 -> openEditor(action = "IMPORT_FILES")
-                    2 -> openEditor(action = "IMPORT_ZIP")
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+        DialogUiHelper.showCustomListDialog(this, "Import Code / Project", items)
     }
 
     private fun setupQuickTools() {
@@ -335,21 +321,35 @@ class HomeActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.toolCdn).setOnClickListener {
-            val names = CdnLibraries.items.map { "${it.name}\n${it.description}" }.toTypedArray()
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Add Library (CDN)")
-                .setItems(names) { _, which ->
-                    val item = CdnLibraries.items[which]
-                    val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
-                    val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
-                    val existingHtml = projPrefs.getString("${curName}_html", null) ?: projPrefs.getString("html", "") ?: ""
-                    val (updatedHtml, _) = CdnLibraries.injectIntoHtml(existingHtml, item.htmlCode)
-                    projPrefs.edit { putString("${curName}_html", updatedHtml) }
-                    Toast.makeText(this, "Added ${item.name}!", Toast.LENGTH_SHORT).show()
-                    openEditor(action = "OPEN_PROJECT", projectName = curName)
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
+            val iconMap = mapOf(
+                "Bootstrap 5.3" to "🅱️",
+                "Tailwind CSS (CDN)" to "🎨",
+                "Font Awesome 6" to "🅰️",
+                "Animate.css" to "✨",
+                "Google Fonts (Poppins)" to "🔤",
+                "jQuery 3.7" to "💛",
+                "Vue.js 3" to "💚",
+                "Chart.js" to "📊",
+                "SweetAlert2" to "🔔",
+            )
+            val items = CdnLibraries.items.map { item ->
+                val icon = iconMap[item.name] ?: "📦"
+                CustomListItem(
+                    icon = icon,
+                    title = item.name,
+                    subtitle = item.description,
+                    action = {
+                        val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
+                        val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
+                        val existingHtml = projPrefs.getString("${curName}_html", null) ?: projPrefs.getString("html", "") ?: ""
+                        val (updatedHtml, _) = CdnLibraries.injectIntoHtml(existingHtml, item.htmlCode)
+                        projPrefs.edit { putString("${curName}_html", updatedHtml) }
+                        Toast.makeText(this, "Added ${item.name}!", Toast.LENGTH_SHORT).show()
+                        openEditor(action = "OPEN_PROJECT", projectName = curName)
+                    },
+                )
+            }
+            DialogUiHelper.showCustomListDialog(this, "Add Library (CDN)", items)
         }
 
         findViewById<View>(R.id.toolServer).setOnClickListener {

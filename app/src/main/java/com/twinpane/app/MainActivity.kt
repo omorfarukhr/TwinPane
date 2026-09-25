@@ -665,33 +665,32 @@ class MainActivity : AppCompatActivity() {
         val customTemplates = CustomTemplatesManager.getCustomTemplates(this)
         val allTemplates = (Templates.all + customTemplates).distinctBy { it.name }
 
-        val options = mutableListOf("➕ Save Current Code as Custom Template")
-        options.addAll(allTemplates.map {
-            if (it in customTemplates) "⭐ ${it.name} (Custom)" else "📄 ${it.name}"
-        })
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Templates")
-            .setItems(options.toTypedArray()) { _, which ->
-                if (which == 0) {
-                    saveCustomTemplateDialog()
-                } else {
-                    val selected = allTemplates[which - 1]
-                    confirmReplace { loadTemplate(selected) }
-                }
+        val items = mutableListOf<CustomListItem>()
+        items.add(
+            CustomListItem("➕", "Save Current Code as Custom Template", "Save HTML, CSS, JS as reusable template") {
+                saveCustomTemplateDialog()
             }
-            .show()
+        )
+        allTemplates.forEach { tmpl ->
+            val isCustom = tmpl in customTemplates
+            items.add(
+                CustomListItem(
+                    icon = if (isCustom) "⭐" else "📑",
+                    title = tmpl.name,
+                    subtitle = if (isCustom) "Custom User Template" else "Built-in Starter Kit",
+                    action = { confirmReplace { loadTemplate(tmpl) } }
+                )
+            )
+        }
+        DialogUiHelper.showCustomListDialog(this, "Templates", items)
     }
 
     private fun saveCustomTemplateDialog() {
-        val input = EditText(this).apply {
-            hint = "e.g. My Navbar / Portfolio Layout"
-            setSingleLine()
-        }
+        val (container, input) = DialogUiHelper.createStyledInput(this, "e.g. My Navbar / Portfolio Layout")
         MaterialAlertDialogBuilder(this)
             .setTitle("Save Custom Template")
             .setMessage("Save current HTML, CSS, and JS as a reusable template:")
-            .setView(input)
+            .setView(container)
             .setPositiveButton("Save") { _, _ ->
                 val name = input.text.toString().trim()
                 if (name.isNotEmpty()) {
@@ -712,28 +711,43 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCdnLibraries() {
-        val names = CdnLibraries.items.map { "${it.name}\n${it.description}" }.toTypedArray()
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Add Library (CDN)")
-            .setItems(names) { _, which ->
-                val item = CdnLibraries.items[which]
-                val (updatedHtml, injected) = CdnLibraries.injectIntoHtml(code[0], item.htmlCode)
-                if (injected) {
-                    code[0] = updatedHtml
-                    if (currentTab == 0) {
-                        switching = true
-                        editor.setText(code[0])
-                        switching = false
-                        highlightNow()
+        val iconMap = mapOf(
+            "Bootstrap 5.3" to "🅱️",
+            "Tailwind CSS (CDN)" to "🎨",
+            "Font Awesome 6" to "🅰️",
+            "Animate.css" to "✨",
+            "Google Fonts (Poppins)" to "🔤",
+            "jQuery 3.7" to "💛",
+            "Vue.js 3" to "💚",
+            "Chart.js" to "📊",
+            "SweetAlert2" to "🔔",
+        )
+        val items = CdnLibraries.items.map { item ->
+            val icon = iconMap[item.name] ?: "📦"
+            CustomListItem(
+                icon = icon,
+                title = item.name,
+                subtitle = item.description,
+                action = {
+                    val (updatedHtml, injected) = CdnLibraries.injectIntoHtml(code[0], item.htmlCode)
+                    if (injected) {
+                        code[0] = updatedHtml
+                        if (currentTab == 0) {
+                            switching = true
+                            editor.setText(code[0])
+                            switching = false
+                            highlightNow()
+                        }
+                        render()
+                        saveCode()
+                        Toast.makeText(this, "Added ${item.name}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "${item.name} is already in HTML", Toast.LENGTH_SHORT).show()
                     }
-                    render()
-                    saveCode()
-                    Toast.makeText(this, "Added ${item.name}", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "${item.name} is already in HTML", Toast.LENGTH_SHORT).show()
                 }
-            }
-            .show()
+            )
+        }
+        DialogUiHelper.showCustomListDialog(this, "Add Library (CDN)", items)
     }
 
     private fun showColorPicker() {
@@ -813,12 +827,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEmmetDialog() {
-        val input = EditText(this).apply {
-            hint = "e.g. div.card>h2.title+p.desc or ul>li*3"
-        }
+        val (container, input) = DialogUiHelper.createStyledInput(this, "e.g. div.card>h2.title+p.desc or ul>li*3")
         MaterialAlertDialogBuilder(this)
             .setTitle("Emmet Expand")
-            .setView(input)
+            .setView(container)
             .setPositiveButton("Expand") { _, _ ->
                 val abbr = input.text.toString().trim()
                 val expanded = EmmetEngine.expand(abbr)

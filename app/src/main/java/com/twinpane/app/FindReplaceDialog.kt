@@ -2,7 +2,6 @@ package com.twinpane.app
 
 import android.content.Context
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -14,17 +13,39 @@ object FindReplaceDialog {
         currentText: String,
         onTextReplaced: (String) -> Unit,
     ) {
-        val layout = LinearLayoutView(context)
+        val density = context.resources.displayMetrics.density
+        fun dp(v: Int) = (v * density).toInt()
+
+        val (findContainer, etFind) = DialogUiHelper.createStyledInput(context, "Find text...")
+        val (replaceContainer, etReplace) = DialogUiHelper.createStyledInput(context, "Replace with...")
+
+        val btnReplaceAll = Button(context).apply {
+            text = "Replace All"
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(dp(20), dp(8), dp(20), dp(12))
+            }
+            layoutParams = params
+        }
+
+        val root = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(findContainer)
+            addView(replaceContainer)
+            addView(btnReplaceAll)
+        }
 
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Find & Replace")
-            .setView(layout.root)
+            .setView(root)
             .setNegativeButton("Close", null)
             .create()
 
-        layout.btnReplaceAll.setOnClickListener {
-            val find = layout.etFind.text.toString()
-            val replace = layout.etReplace.text.toString()
+        btnReplaceAll.setOnClickListener {
+            val find = etFind.text.toString()
+            val replace = etReplace.text.toString()
             if (find.isNotEmpty()) {
                 val count = currentText.split(find).size - 1
                 val updated = currentText.replace(find, replace)
@@ -35,27 +56,5 @@ object FindReplaceDialog {
         }
 
         dialog.show()
-    }
-
-    private class LinearLayoutView(context: Context) {
-        val etFind = EditText(context).apply {
-            hint = "Find text..."
-            setSingleLine()
-        }
-        val etReplace = EditText(context).apply {
-            hint = "Replace with..."
-            setSingleLine()
-        }
-        val btnReplaceAll = Button(context).apply {
-            text = "Replace All"
-        }
-
-        val root = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(40, 20, 40, 20)
-            addView(etFind)
-            addView(etReplace)
-            addView(btnReplaceAll)
-        }
     }
 }
