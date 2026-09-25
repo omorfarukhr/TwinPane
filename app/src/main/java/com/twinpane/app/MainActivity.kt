@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         previewContainer = findViewById(R.id.previewContainer)
         setSupportActionBar(toolbar)
         supportActionBar?.title = files.projectName
-        supportActionBar?.subtitle = "HTML / CSS / JS Workspace"
+        supportActionBar?.subtitle = null
 
         problemsBar.setOnClickListener { showProblems() }
 
@@ -1052,9 +1052,21 @@ class MainActivity : AppCompatActivity() {
                 code.addAll(listOf(tmpl.html, tmpl.css, tmpl.js))
                 saveCode()
             }
-            "IMPORT" -> {
+            "IMPORT_SINGLE" -> {
+                loadSavedCodeForCurrentProject(defaults)
+                handler.postDelayed({ files.handleMenu(R.id.action_import_html) }, 300)
+            }
+            "IMPORT_FILES", "IMPORT" -> {
                 loadSavedCodeForCurrentProject(defaults)
                 handler.postDelayed({ files.handleMenu(R.id.action_import_files) }, 300)
+            }
+            "IMPORT_ZIP" -> {
+                loadSavedCodeForCurrentProject(defaults)
+                handler.postDelayed({ files.handleMenu(R.id.action_import_zip) }, 300)
+            }
+            "STORAGE" -> {
+                loadSavedCodeForCurrentProject(defaults)
+                handler.postDelayed({ StorageInspectorDialog.show(this, preview) { render() } }, 400)
             }
             else -> {
                 loadSavedCodeForCurrentProject(defaults)

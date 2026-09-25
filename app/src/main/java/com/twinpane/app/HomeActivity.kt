@@ -47,8 +47,8 @@ class HomeActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.btnAbout).setOnClickListener { showAboutDialog() }
         findViewById<Button>(R.id.btnNewProject).setOnClickListener { promptNewProject() }
-        findViewById<Button>(R.id.btnOpenSandbox).setOnClickListener { openEditor() }
-        findViewById<Button>(R.id.btnImport).setOnClickListener { openEditor() }
+        findViewById<Button>(R.id.btnOpenSandbox).setOnClickListener { openEditor(action = "OPEN_PROJECT", projectName = "Quick Sandbox") }
+        findViewById<Button>(R.id.btnImport).setOnClickListener { showImportOptionsDialog() }
         findViewById<View>(R.id.githubCard).setOnClickListener { openGitHubRepo() }
 
         setupQuickTools()
@@ -302,19 +302,96 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun showImportOptionsDialog() {
+        val options = arrayOf(
+            "📄 Import Single HTML File",
+            "📁 Import HTML + CSS + JS Files",
+            "📦 Import ZIP Project Archive"
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Import Code / Project")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> openEditor(action = "IMPORT_SINGLE")
+                    1 -> openEditor(action = "IMPORT_FILES")
+                    2 -> openEditor(action = "IMPORT_ZIP")
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     private fun setupQuickTools() {
         findViewById<View>(R.id.toolCssGen).setOnClickListener {
-            CssGenerator.showDialog(this) { openEditor(action = "OPEN_PROJECT") }
+            CssGenerator.showDialog(this) { css ->
+                val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
+                val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
+                val existingCss = projPrefs.getString("${curName}_css", null) ?: projPrefs.getString("css", "") ?: ""
+                val updatedCss = if (existingCss.isBlank()) css else "$existingCss\n\n$css"
+                projPrefs.edit { putString("${curName}_css", updatedCss) }
+                Toast.makeText(this, "Generated CSS Added!", Toast.LENGTH_SHORT).show()
+                openEditor(action = "OPEN_PROJECT", projectName = curName)
+            }
         }
+
         findViewById<View>(R.id.toolCdn).setOnClickListener {
-            openEditor(action = "OPEN_PROJECT")
+            val names = CdnLibraries.items.map { "${it.name}\n${it.description}" }.toTypedArray()
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Add Library (CDN)")
+                .setItems(names) { _, which ->
+                    val item = CdnLibraries.items[which]
+                    val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
+                    val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
+                    val existingHtml = projPrefs.getString("${curName}_html", null) ?: projPrefs.getString("html", "") ?: ""
+                    val (updatedHtml, _) = CdnLibraries.injectIntoHtml(existingHtml, item.htmlCode)
+                    projPrefs.edit { putString("${curName}_html", updatedHtml) }
+                    Toast.makeText(this, "Added ${item.name}!", Toast.LENGTH_SHORT).show()
+                    openEditor(action = "OPEN_PROJECT", projectName = curName)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
+
         findViewById<View>(R.id.toolServer).setOnClickListener {
-            val ip = LocalWebServer.getLocalIpAddress() ?: "127.0.0.1"
-            Toast.makeText(this, "Local Wi-Fi IP: $ip (Open editor to start server)", Toast.LENGTH_LONG).show()
+            toggleServerOnDashboard()
         }
+
         findViewById<View>(R.id.toolStorage).setOnClickListener {
-            openEditor(action = "OPEN_PROJECT")
+            openEditor(action = "STORAGE")
+        }
+    }
+
+    private fun toggleServerOnDashboard() {
+        if (LocalWebServer.isRunning) {
+            LocalWebServer.stop()
+            Toast.makeText(this, "Wi-Fi Web Server Stopped", Toast.LENGTH_SHORT).show()
+        } else {
+            val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
+            val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
+            val html = projPrefs.getString("${curName}_html", null) ?: projPrefs.getString("html", "<h1>TwinPane Live Server</h1>") ?: ""
+            val css = projPrefs.getString("${curName}_css", null) ?: projPrefs.getString("css", "") ?: ""
+            val js = projPrefs.getString("${curName}_js", null) ?: projPrefs.getString("js", "") ?: ""
+            val fullHtml = "<!DOCTYPE html><html><head><style>$css</style></head><body>$html<script>$js</script></body></html>"
+
+            val success = LocalWebServer.start(8080) { fullHtml }
+            if (success) {
+                val ip = LocalWebServer.getLocalIpAddress() ?: "127.0.0.1"
+                val url = "http://$ip:8080"
+                val bitmap = QrCodeGenerator.generateMatrixBitmap(url, 400)
+                val iv = ImageView(this).apply {
+                    setImageBitmap(bitmap)
+                    setPadding(dp(20), dp(10), dp(20), dp(10))
+                }
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Live Wi-Fi Server Active")
+                    .setMessage("Server running on local Wi-Fi:\n$url\n\nScan QR Code on other devices on same Wi-Fi:")
+                    .setView(iv)
+                    .setPositiveButton("Open Editor") { _, _ -> openEditor(action = "OPEN_PROJECT", projectName = curName) }
+                    .setNegativeButton("Stop Server") { _, _ -> LocalWebServer.stop() }
+                    .show()
+            } else {
+                Toast.makeText(this, "Could not start server on port 8080", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
