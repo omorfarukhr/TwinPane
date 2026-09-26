@@ -8,8 +8,8 @@
         <item name="colorOnSurface">@color/text</item>
         <item name="android:colorBackground">@color/bg</item>
         <item name="android:windowBackground">@color/bg</item>
-        <item name="fontFamily">monospace</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="fontFamily">@font/jetbrains_mono</item>
+        <item name="android:fontFamily">@font/jetbrains_mono</item>
         <item name="materialAlertDialogTheme">@style/Theme.TwinPane.Dialog</item>
         <item name="alertDialogTheme">@style/Theme.TwinPane.Dialog</item>
     </style>

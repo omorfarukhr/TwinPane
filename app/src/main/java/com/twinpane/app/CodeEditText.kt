@@ -8,6 +8,7 @@ import android.text.Editable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 
 class CodeEditText @JvmOverloads constructor(
     context: Context,
@@ -24,6 +25,8 @@ class CodeEditText @JvmOverloads constructor(
             if (field != value) { field = value; invalidate() }
         }
 
+    private val jbFont: Typeface = ResourcesCompat.getFont(context, R.font.jetbrains_mono) ?: Typeface.MONOSPACE
+
     private val gutterPaint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.gutter_bg)
     }
@@ -34,18 +37,18 @@ class CodeEditText @JvmOverloads constructor(
     private val numberPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.gutter)
         textAlign = Paint.Align.RIGHT
-        typeface = Typeface.MONOSPACE
+        typeface = jbFont
     }
     private val activeNumberPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.accent)
         textAlign = Paint.Align.RIGHT
-        typeface = Typeface.MONOSPACE
+        typeface = jbFont
         isFakeBoldText = true
     }
     private val errorNumberPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.error)
         textAlign = Paint.Align.RIGHT
-        typeface = Typeface.MONOSPACE
+        typeface = jbFont
         isFakeBoldText = true
     }
     private val activeLinePaint = Paint().apply {
@@ -62,7 +65,7 @@ class CodeEditText @JvmOverloads constructor(
     }
 
     init {
-        typeface = Typeface.MONOSPACE
+        typeface = jbFont
         textSize = 14f
         letterSpacing = 0.02f
         setPadding((gutterWidth + (10 * density)).toInt(), paddingTop, paddingRight, paddingBottom)
