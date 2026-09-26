@@ -914,11 +914,13 @@ class MainActivity : AppCompatActivity() {
         }
         menu.findItem(R.id.action_run)?.let { item ->
             if (autoRun) {
+                item.setIcon(R.drawable.ic_pause)
                 item.icon?.mutate()?.setTint(ContextCompat.getColor(this, R.color.accent))
-                item.title = "Live Auto-Run Active (Tap to Reload)"
+                item.title = "Pause Auto-Run"
             } else {
+                item.setIcon(R.drawable.ic_play)
                 item.icon?.mutate()?.setTint(ContextCompat.getColor(this, R.color.text))
-                item.title = "Run Preview"
+                item.title = "Play / Enable Auto-Run"
             }
         }
         return super.onPrepareOptionsMenu(menu)
@@ -936,7 +938,22 @@ class MainActivity : AppCompatActivity() {
         if (files.handleMenu(item.itemId)) return true
         if (item.itemId == R.id.action_undo) { history.undo(); return true }
         if (item.itemId == R.id.action_redo) { history.redo(); return true }
-        if (item.itemId == R.id.action_run) { render(); saveCode(); return true }
+        if (item.itemId == R.id.action_run) {
+            if (autoRun) {
+                autoRun = false
+                prefs.edit { putBoolean("auto_run", false) }
+                invalidateOptionsMenu()
+                Toast.makeText(this, "Auto-Run Paused (Tap ▶ to run manually)", Toast.LENGTH_SHORT).show()
+            } else {
+                autoRun = true
+                prefs.edit { putBoolean("auto_run", true) }
+                invalidateOptionsMenu()
+                render()
+                saveCode()
+                Toast.makeText(this, "Live Preview Running (Auto-Run Enabled)", Toast.LENGTH_SHORT).show()
+            }
+            return true
+        }
 
         return super.onOptionsItemSelected(item)
     }
