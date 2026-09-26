@@ -908,6 +908,7 @@ class MainActivity : AppCompatActivity() {
         val textColor = ContextCompat.getColor(this, R.color.text)
 
         menu.findItem(R.id.action_home)?.icon?.mutate()?.setTint(textColor)
+        menu.findItem(R.id.action_theme)?.icon?.mutate()?.setTint(textColor)
         menu.findItem(R.id.action_main_menu)?.icon?.mutate()?.setTint(textColor)
 
         menu.findItem(R.id.action_undo)?.let {
@@ -937,6 +938,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_home) {
             finish()
+            return true
+        }
+        if (item.itemId == R.id.action_theme) {
+            ThemeManager.showThemeSelectionDialog(this)
             return true
         }
         if (item.itemId == R.id.action_main_menu) {
