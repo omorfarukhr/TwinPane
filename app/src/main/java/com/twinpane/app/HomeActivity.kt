@@ -29,6 +29,7 @@ class HomeActivity : AppCompatActivity() {
     private val prefs by lazy { getSharedPreferences("twinpane_projects_list", MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
@@ -101,9 +102,20 @@ class HomeActivity : AppCompatActivity() {
                 setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                 gravity = Gravity.CENTER
             }
+
+            val btnTheme = Button(this@HomeActivity).apply {
+                text = "Switch App Theme"
+                textSize = 12f
+                setTextColor(ContextCompat.getColor(context, R.color.accent))
+                setOnClickListener {
+                    ThemeManager.showThemeSelectionDialog(this@HomeActivity)
+                }
+            }
+
             addView(logo)
             addView(title)
             addView(version)
+            addView(btnTheme)
         }
 
         MaterialAlertDialogBuilder(this)

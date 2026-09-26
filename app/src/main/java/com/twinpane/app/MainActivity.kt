@@ -152,6 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
@@ -1115,6 +1116,12 @@ class MainActivity : AppCompatActivity() {
 
         // --- 8. Settings & View Sub-menu ---
         val settingsViewSubItems = listOf(
+            MenuItemData(
+                iconRes = R.drawable.ic_settings,
+                title = "App Theme Mode",
+                subtitle = "Switch between Royal Dark, Clean Light, or System",
+                action = { ThemeManager.showThemeSelectionDialog(this) },
+            ),
             MenuItemData(
                 iconRes = R.drawable.ic_viewport,
                 title = "Side-by-side Layout",

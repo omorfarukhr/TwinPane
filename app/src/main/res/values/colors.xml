@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Deep Royal Neon Glassmorphic IDE Palette (Logo Matched) -->
-    <color name="bg">#0B0726</color>
-    <color name="surface">#150F44</color>
-    <color name="surface_2">#21185E</color>
-    <color name="editor_bg">#0E0930</color>
-    <color name="active_line">#1C1354</color>
-    <color name="active_line_border">#00E5FF</color>
-    <color name="gutter">#7066AA</color>
-    <color name="gutter_bg">#110B36</color>
-    <color name="gutter_border">#261A66</color>
-    <color name="text">#F8FAFC</color>
-    <color name="text_secondary">#A599E0</color>
+    <!-- Crisp Studio Light Mode Palette -->
+    <color name="bg">#F8FAFC</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_2">#F1F5F9</color>
+    <color name="editor_bg">#F8FAFC</color>
+    <color name="active_line">#F1F5F9</color>
+    <color name="active_line_border">#0284C7</color>
+    <color name="gutter">#64748B</color>
+    <color name="gutter_bg">#E2E8F0</color>
+    <color name="gutter_border">#CBD5E1</color>
+    <color name="text">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
 
-    <!-- Logo Brand Accents -->
-    <color name="accent">#00E5FF</color> <!-- Neon Cyan (Middle Split Bar) -->
-    <color name="accent_2">#EC4899</color> <!-- Electric Pink/Magenta (Play Button) -->
-    <color name="accent_violet">#C084FC</color> <!-- Neon Lavender (Code Brackets) -->
-    <color name="live_green">#00E5FF</color>
+    <!-- Logo Brand Accents (Light Mode Variant) -->
+    <color name="accent">#0284C7</color> <!-- Electric Blue/Cyan -->
+    <color name="accent_2">#DB2777</color> <!-- Deep Pink/Magenta -->
+    <color name="accent_violet">#7C3AED</color> <!-- Deep Lavender/Violet -->
+    <color name="live_green">#0284C7</color>
 
     <!-- Dividers & Borders -->
-    <color name="divider">#261B6B</color>
-    <color name="divider_handle">#7066AA</color>
-    <color name="divider_active">#00E5FF</color>
+    <color name="divider">#E2E8F0</color>
+    <color name="divider_handle">#94A3B8</color>
+    <color name="divider_active">#0284C7</color>
 
     <!-- Console & Terminal -->
-    <color name="console_bg">#07041A</color>
-    <color name="console_text">#00E5FF</color>
+    <color name="console_bg">#F1F5F9</color>
+    <color name="console_text">#0369A1</color>
 
     <!-- System & Status -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="error">#F43F5E</color>
-    <color name="warn">#F59E0B</color>
-    <color name="error_bg">#3D0B1C</color>
-    <color name="error_line">#2AF43F5E</color>
+    <color name="error">#E11D48</color>
+    <color name="warn">#D97706</color>
+    <color name="error_bg">#FFE4E6</color>
+    <color name="error_line">#2AE11D48</color>
 
     <!-- Language Colors -->
-    <color name="tab_html">#EC4899</color>
-    <color name="tab_css">#00E5FF</color>
-    <color name="tab_js">#F59E0B</color>
+    <color name="tab_html">#DB2777</color>
+    <color name="tab_css">#0284C7</color>
+    <color name="tab_js">#D97706</color>
 </resources>
