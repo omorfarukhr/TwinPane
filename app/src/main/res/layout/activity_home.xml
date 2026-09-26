@@ -63,6 +63,18 @@
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/btnTheme"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Switch Theme"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_theme"
+                app:tint="@color/text" />
+
+            <ImageButton
                 android:id="@+id/btnAbout"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

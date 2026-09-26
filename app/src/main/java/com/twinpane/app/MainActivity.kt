@@ -905,12 +905,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val textColor = ContextCompat.getColor(this, R.color.text)
+
+        menu.findItem(R.id.action_home)?.icon?.mutate()?.setTint(textColor)
+        menu.findItem(R.id.action_theme)?.icon?.mutate()?.setTint(textColor)
+        menu.findItem(R.id.action_main_menu)?.icon?.mutate()?.setTint(textColor)
+
         menu.findItem(R.id.action_undo)?.let {
             it.isEnabled = history.canUndo
+            it.icon?.mutate()?.setTint(textColor)
             it.icon?.mutate()?.alpha = if (it.isEnabled) 255 else 80
         }
         menu.findItem(R.id.action_redo)?.let {
             it.isEnabled = history.canRedo
+            it.icon?.mutate()?.setTint(textColor)
             it.icon?.mutate()?.alpha = if (it.isEnabled) 255 else 80
         }
         menu.findItem(R.id.action_run)?.let { item ->
@@ -920,7 +928,7 @@ class MainActivity : AppCompatActivity() {
                 item.title = "Pause Auto-Run"
             } else {
                 item.setIcon(R.drawable.ic_play)
-                item.icon?.mutate()?.setTint(ContextCompat.getColor(this, R.color.text))
+                item.icon?.mutate()?.setTint(textColor)
                 item.title = "Play / Enable Auto-Run"
             }
         }
@@ -930,6 +938,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_home) {
             finish()
+            return true
+        }
+        if (item.itemId == R.id.action_theme) {
+            ThemeManager.showThemeSelectionDialog(this)
             return true
         }
         if (item.itemId == R.id.action_main_menu) {

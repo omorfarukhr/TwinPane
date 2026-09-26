@@ -45,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
+        findViewById<ImageButton>(R.id.btnTheme).setOnClickListener { ThemeManager.showThemeSelectionDialog(this) }
         findViewById<ImageButton>(R.id.btnAbout).setOnClickListener { showAboutDialog() }
         findViewById<Button>(R.id.btnNewProject).setOnClickListener { promptNewProject() }
         findViewById<Button>(R.id.btnOpenSandbox).setOnClickListener { openEditor(action = "OPEN_PROJECT", projectName = "Quick Sandbox") }
