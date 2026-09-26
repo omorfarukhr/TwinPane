@@ -86,46 +86,72 @@
                 app:tint="@color/text_secondary" />
         </LinearLayout>
 
-        <!-- Quick Action Hub -->
+        <!-- Quick Action Hub (Bootstrap Style) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNewProject"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/accent"
-                android:text="@string/btn_new_project"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:fontFamily="@font/jetbrains_mono"
+                android:text="New"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_add"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconSize="18dp"
+                app:iconTint="@color/white" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnOpenSandbox"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/surface_2"
-                android:text="@string/btn_sandbox"
-                android:textColor="@color/accent_2"
-                android:textSize="13sp" />
-
-            <Button
-                android:id="@+id/btnImport"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/btn_import"
+                android:fontFamily="@font/jetbrains_mono"
+                android:text="Sandbox"
                 android:textColor="@color/text"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_code"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconSize="18dp"
+                app:iconTint="@color/accent"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImport"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/surface_2"
+                android:fontFamily="@font/jetbrains_mono"
+                android:text="Import"
+                android:textColor="@color/text"
+                android:textSize="13sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_folder"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconSize="18dp"
+                app:iconTint="@color/accent_2"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp" />
         </LinearLayout>
 
         <!-- Recent Projects Section -->
