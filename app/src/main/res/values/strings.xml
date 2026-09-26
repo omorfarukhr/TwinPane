@@ -28,9 +28,18 @@
     <string name="action_main_menu">Menu</string>
     <string name="action_home">Home</string>
 
+    <!-- Dashboard Strings -->
+    <string name="btn_new_project">New</string>
+    <string name="btn_sandbox">Sandbox</string>
+    <string name="btn_import">Import</string>
+    <string name="tool_css_generator">CSS Generator</string>
+    <string name="tool_cdn_libraries">CDN Libraries</string>
+    <string name="tool_wifi_server">Wi-Fi Server</string>
+    <string name="tool_storage_inspector">Storage Inspector</string>
+
     <!-- GitHub Banner -->
     <string name="github_banner_author">Developed by Omor Faruk</string>
-    <string name="github_banner_support">⭐ Star &amp; Support TwinPane on GitHub</string>
-    <string name="github_banner_star">★ Star</string>
+    <string name="github_banner_support">Star &amp; Support TwinPane on GitHub</string>
+    <string name="github_banner_star">Star</string>
     <string name="desc_github_logo">GitHub Logo</string>
 </resources>

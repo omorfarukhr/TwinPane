@@ -89,7 +89,7 @@
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/accent"
-                android:text="➕ New"
+                android:text="@string/btn_new_project"
                 android:textColor="@color/white"
                 android:textSize="13sp" />
 
@@ -101,7 +101,7 @@
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/surface_2"
-                android:text="⚡ Sandbox"
+                android:text="@string/btn_sandbox"
                 android:textColor="@color/accent_2"
                 android:textSize="13sp" />
 
@@ -111,7 +111,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="📁 Import"
+                android:text="@string/btn_import"
                 android:textColor="@color/text"
                 android:textSize="13sp" />
         </LinearLayout>

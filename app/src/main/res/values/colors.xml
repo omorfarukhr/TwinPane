@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Deep Dark IDE Theme Palette -->
-    <color name="bg">#0B0D12</color>
-    <color name="surface">#131722</color>
-    <color name="surface_2">#1B202D</color>
-    <color name="editor_bg">#0F121A</color>
-    <color name="active_line">#1A202C</color>
-    <color name="active_line_border">#8B5CF6</color>
-    <color name="gutter">#475569</color>
-    <color name="gutter_bg">#11141D</color>
+    <!-- Deep Dark Logo-Matched IDE Palette -->
+    <color name="bg">#0A0D12</color>
+    <color name="surface">#121722</color>
+    <color name="surface_2">#19202E</color>
+    <color name="editor_bg">#0D1118</color>
+    <color name="active_line">#13221C</color>
+    <color name="active_line_border">#3DDC84</color>
+    <color name="gutter">#64748B</color>
+    <color name="gutter_bg">#0F131C</color>
     <color name="gutter_border">#1E293B</color>
     <color name="text">#F8FAFC</color>
     <color name="text_secondary">#94A3B8</color>
 
-    <!-- Accents -->
-    <color name="accent">#8B5CF6</color> <!-- Electric Violet -->
-    <color name="accent_2">#06B6D4</color> <!-- Cyber Cyan -->
-    <color name="live_green">#10B981</color> <!-- Spring Green -->
+    <!-- Logo Brand Accents -->
+    <color name="accent">#3DDC84</color> <!-- Android Cyber Green (Logo Match) -->
+    <color name="accent_2">#00E5FF</color> <!-- Electric Cyan -->
+    <color name="live_green">#3DDC84</color>
 
     <!-- Dividers & Borders -->
     <color name="divider">#1E293B</color>
-    <color name="divider_handle">#475569</color>
-    <color name="divider_active">#8B5CF6</color>
+    <color name="divider_handle">#64748B</color>
+    <color name="divider_active">#3DDC84</color>
 
     <!-- Console & Terminal -->
-    <color name="console_bg">#07090E</color>
-    <color name="console_text">#A7F3D0</color>
+    <color name="console_bg">#06080D</color>
+    <color name="console_text">#3DDC84</color>
 
     <!-- System & Status -->
     <color name="black">#FF000000</color>

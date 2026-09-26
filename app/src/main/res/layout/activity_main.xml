@@ -30,7 +30,7 @@
         app:tabIndicatorColor="@color/accent"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="3dp"
-        app:tabRippleColor="#228B5CF6"
+        app:tabRippleColor="#223DDC84"
         app:tabSelectedTextColor="@color/text"
         app:tabTextColor="@color/text_secondary" />
 
