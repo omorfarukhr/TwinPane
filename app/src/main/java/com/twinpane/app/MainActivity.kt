@@ -670,17 +670,20 @@ class MainActivity : AppCompatActivity() {
 
         val items = mutableListOf<CustomListItem>()
         items.add(
-            CustomListItem("➕", "Save Current Code as Custom Template", "Save HTML, CSS, JS as reusable template") {
-                saveCustomTemplateDialog()
-            }
+            CustomListItem(
+                title = "Save Current Code as Custom Template",
+                subtitle = "Save HTML, CSS, JS as reusable template",
+                iconRes = R.drawable.ic_add,
+                action = { saveCustomTemplateDialog() }
+            )
         )
         allTemplates.forEach { tmpl ->
             val isCustom = tmpl in customTemplates
             items.add(
                 CustomListItem(
-                    icon = if (isCustom) "⭐" else "📑",
                     title = tmpl.name,
                     subtitle = if (isCustom) "Custom User Template" else "Built-in Starter Kit",
+                    iconRes = if (isCustom) R.drawable.ic_star else R.drawable.ic_template,
                     action = { confirmReplace { loadTemplate(tmpl) } }
                 )
             )
@@ -714,23 +717,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCdnLibraries() {
-        val iconMap = mapOf(
-            "Bootstrap 5.3" to "🅱️",
-            "Tailwind CSS (CDN)" to "🎨",
-            "Font Awesome 6" to "🅰️",
-            "Animate.css" to "✨",
-            "Google Fonts (Poppins)" to "🔤",
-            "jQuery 3.7" to "💛",
-            "Vue.js 3" to "💚",
-            "Chart.js" to "📊",
-            "SweetAlert2" to "🔔",
-        )
         val items = CdnLibraries.items.map { item ->
-            val icon = iconMap[item.name] ?: "📦"
             CustomListItem(
-                icon = icon,
                 title = item.name,
                 subtitle = item.description,
+                iconRes = R.drawable.ic_code,
                 action = {
                     val (updatedHtml, injected) = CdnLibraries.injectIntoHtml(code[0], item.htmlCode)
                     if (injected) {
@@ -936,35 +927,35 @@ class MainActivity : AppCompatActivity() {
     private fun openMainMenu() {
         // --- 1. Project Sub-menu ---
         val importSubItems = listOf(
-            MenuItemData(icon = "📄", title = "Import Single HTML File", subtitle = "Load a standalone .html file into project", action = { files.handleMenu(R.id.action_import_html) }),
-            MenuItemData(icon = "📁", title = "Import HTML + CSS + JS", subtitle = "Load separate web source files", action = { files.handleMenu(R.id.action_import_files) }),
-            MenuItemData(icon = "📦", title = "Import ZIP Project Archive", subtitle = "Extract and load a .zip project archive", action = { files.handleMenu(R.id.action_import_zip) }),
+            MenuItemData(iconRes = R.drawable.ic_file, title = "Import Single HTML File", subtitle = "Load a standalone .html file into project", action = { files.handleMenu(R.id.action_import_html) }),
+            MenuItemData(iconRes = R.drawable.ic_folder, title = "Import HTML + CSS + JS", subtitle = "Load separate web source files", action = { files.handleMenu(R.id.action_import_files) }),
+            MenuItemData(iconRes = R.drawable.ic_zip, title = "Import ZIP Project Archive", subtitle = "Extract and load a .zip project archive", action = { files.handleMenu(R.id.action_import_zip) }),
         )
 
         val projectSubItems = listOf(
-            MenuItemData(icon = "➕", title = "New Project", subtitle = "Create a new web application workspace", action = { files.handleMenu(R.id.action_new_project) }),
-            MenuItemData(icon = "✏️", title = "Rename Project", subtitle = "Change current project title", action = { files.handleMenu(R.id.action_rename_project) }),
-            MenuItemData(icon = "📁", title = "Import Code / Project", subtitle = "Load HTML, CSS, JS, or ZIP archive", isSubMenu = true, subItems = importSubItems),
+            MenuItemData(iconRes = R.drawable.ic_add, title = "New Project", subtitle = "Create a new web application workspace", action = { files.handleMenu(R.id.action_new_project) }),
+            MenuItemData(iconRes = R.drawable.ic_edit, title = "Rename Project", subtitle = "Change current project title", action = { files.handleMenu(R.id.action_rename_project) }),
+            MenuItemData(iconRes = R.drawable.ic_folder, title = "Import Code / Project", subtitle = "Load HTML, CSS, JS, or ZIP archive", isSubMenu = true, subItems = importSubItems),
         )
 
         // --- 2. Export Sub-menu ---
         val exportSubItems = listOf(
-            MenuItemData(icon = "📦", title = "Export as ZIP", subtitle = "Bundle code into a downloadable .zip archive", action = { files.handleMenu(R.id.action_export_zip) }),
-            MenuItemData(icon = "📁", title = "Export as Separate Files", subtitle = "Save HTML, CSS, JS files to folder", action = { files.handleMenu(R.id.action_export_folder) }),
-            MenuItemData(icon = "📄", title = "Export as Single HTML", subtitle = "Bundle code into a single .html file", action = { files.handleMenu(R.id.action_export_html) }),
+            MenuItemData(iconRes = R.drawable.ic_zip, title = "Export as ZIP", subtitle = "Bundle code into a downloadable .zip archive", action = { files.handleMenu(R.id.action_export_zip) }),
+            MenuItemData(iconRes = R.drawable.ic_folder, title = "Export as Separate Files", subtitle = "Save HTML, CSS, JS files to folder", action = { files.handleMenu(R.id.action_export_folder) }),
+            MenuItemData(iconRes = R.drawable.ic_file, title = "Export as Single HTML", subtitle = "Bundle code into a single .html file", action = { files.handleMenu(R.id.action_export_html) }),
         )
 
         // --- 3. Templates Sub-menu ---
         val customTemplates = CustomTemplatesManager.getCustomTemplates(this)
         val templateSubItems = mutableListOf<MenuItemData>()
         templateSubItems.add(
-            MenuItemData(icon = "➕", title = "Save Current Code as Custom Template", subtitle = "Save current HTML, CSS, JS as reusable template", action = { saveCustomTemplateDialog() })
+            MenuItemData(iconRes = R.drawable.ic_add, title = "Save Current Code as Custom Template", subtitle = "Save current HTML, CSS, JS as reusable template", action = { saveCustomTemplateDialog() })
         )
         (Templates.all + customTemplates).distinctBy { it.name }.forEach { tmpl ->
             val isCustom = tmpl in customTemplates
             templateSubItems.add(
                 MenuItemData(
-                    icon = if (isCustom) "⭐" else "📑",
+                    iconRes = if (isCustom) R.drawable.ic_star else R.drawable.ic_template,
                     title = tmpl.name,
                     subtitle = if (isCustom) "Saved Custom Template" else "Built-in Starter Template",
                     action = { confirmReplace { loadTemplate(tmpl) } }
@@ -974,8 +965,8 @@ class MainActivity : AppCompatActivity() {
 
         // --- 4. Code Tools Sub-menu ---
         val codeToolsSubItems = listOf(
-            MenuItemData(icon = "🧹", title = "Format Code", subtitle = "Beautify & auto-indent HTML, CSS, JS", action = { formatCurrentCode() }),
-            MenuItemData(icon = "🔍", title = "Find & Replace", subtitle = "Search keywords or regex and replace text", action = {
+            MenuItemData(iconRes = R.drawable.ic_brush, title = "Format Code", subtitle = "Beautify & auto-indent HTML, CSS, JS", action = { formatCurrentCode() }),
+            MenuItemData(iconRes = R.drawable.ic_search, title = "Find & Replace", subtitle = "Search keywords or regex and replace text", action = {
                 FindReplaceDialog.show(this, code[currentTab]) { updated ->
                     code[currentTab] = updated
                     switching = true
@@ -985,41 +976,30 @@ class MainActivity : AppCompatActivity() {
                     saveCode()
                 }
             }),
-            MenuItemData(icon = "⚡", title = "Emmet Expand", subtitle = "Expand HTML abbreviations into full markup", action = { showEmmetDialog() }),
-            MenuItemData(icon = "🎨", title = "Color Picker", subtitle = "Select Hex colors from visual Material palette", action = { showColorPicker() }),
+            MenuItemData(iconRes = R.drawable.ic_code, title = "Emmet Expand", subtitle = "Expand HTML abbreviations into full markup", action = { showEmmetDialog() }),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "Color Picker", subtitle = "Select Hex colors from visual Material palette", action = { showColorPicker() }),
         )
 
         // --- 5. CSS Generator Nested Sub-menus ---
         val flexboxSubItems = CssGenerator.flexboxPresets.map { (title, css) ->
-            MenuItemData(icon = "📐", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+            MenuItemData(iconRes = R.drawable.ic_palette, title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
         }
         val shadowSubItems = CssGenerator.shadowPresets.map { (title, css) ->
-            MenuItemData(icon = "🔳", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+            MenuItemData(iconRes = R.drawable.ic_palette, title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
         }
         val gradientSubItems = CssGenerator.gradientPresets.map { (title, css) ->
-            MenuItemData(icon = "🌈", title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
+            MenuItemData(iconRes = R.drawable.ic_palette, title = title, subtitle = css.replace("\n", " "), action = { insertText(css) })
         }
 
         val cssGenSubItems = listOf(
-            MenuItemData(icon = "📐", title = "Flexbox & Grid Layouts", subtitle = "Center alignment, Space between, Grid 2 cols", isSubMenu = true, subItems = flexboxSubItems),
-            MenuItemData(icon = "🔳", title = "Box Shadows & Glassmorphism", subtitle = "Soft elevation, Glow purple, Glass blur", isSubMenu = true, subItems = shadowSubItems),
-            MenuItemData(icon = "🌈", title = "Gradients", subtitle = "Cyberpunk sunset, Neon emerald, Midnight blue", isSubMenu = true, subItems = gradientSubItems),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "Flexbox & Grid Layouts", subtitle = "Center alignment, Space between, Grid 2 cols", isSubMenu = true, subItems = flexboxSubItems),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "Box Shadows & Glassmorphism", subtitle = "Soft elevation, Glow purple, Glass blur", isSubMenu = true, subItems = shadowSubItems),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "Gradients", subtitle = "Cyberpunk sunset, Neon emerald, Midnight blue", isSubMenu = true, subItems = gradientSubItems),
         )
 
-        val iconMap = mapOf(
-            "Bootstrap 5.3" to "🅱️",
-            "Tailwind CSS (CDN)" to "🎨",
-            "Font Awesome 6" to "🅰️",
-            "Animate.css" to "✨",
-            "Google Fonts (Poppins)" to "🔤",
-            "jQuery 3.7" to "💛",
-            "Vue.js 3" to "💚",
-            "Chart.js" to "📊",
-            "SweetAlert2" to "🔔",
-        )
         val cdnSubItems = CdnLibraries.items.map { item ->
             MenuItemData(
-                icon = iconMap[item.name] ?: "📦",
+                iconRes = R.drawable.ic_code,
                 title = item.name,
                 subtitle = item.description,
                 action = {
@@ -1043,15 +1023,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val designSubItems = listOf(
-            MenuItemData(icon = "🎨", title = "CSS Generator", subtitle = "Visual builders for Flexbox, Shadow, Gradients", isSubMenu = true, subItems = cssGenSubItems),
-            MenuItemData(icon = "📦", title = "Add Library (CDN)", subtitle = "Inject Bootstrap, Tailwind, Vue, jQuery, FontAwesome", isSubMenu = true, subItems = cdnSubItems),
-            MenuItemData(icon = "🖼️", title = "Insert Image / Asset", subtitle = "Convert gallery image to Base64 img tag", action = { imagePickerLauncher.launch("image/*") }),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "CSS Generator", subtitle = "Visual builders for Flexbox, Shadow, Gradients", isSubMenu = true, subItems = cssGenSubItems),
+            MenuItemData(iconRes = R.drawable.ic_code, title = "Add Library (CDN)", subtitle = "Inject Bootstrap, Tailwind, Vue, jQuery, FontAwesome", isSubMenu = true, subItems = cdnSubItems),
+            MenuItemData(iconRes = R.drawable.ic_image, title = "Insert Image / Asset", subtitle = "Convert gallery image to Base64 img tag", action = { imagePickerLauncher.launch("image/*") }),
         )
 
         // --- 6. Web Permissions Sub-menu ---
         val webPermissionsSubItems = listOf(
             MenuItemData(
-                icon = "📍",
+                iconRes = R.drawable.ic_security,
                 title = "Geolocation API",
                 subtitle = "Allow HTML5 location requests in preview",
                 isChecked = webGeoEnabled,
@@ -1063,7 +1043,7 @@ class MainActivity : AppCompatActivity() {
                 }
             ),
             MenuItemData(
-                icon = "📷",
+                iconRes = R.drawable.ic_security,
                 title = "Camera & Microphone",
                 subtitle = "Allow WebRTC audio & video streams",
                 isChecked = webCamEnabled,
@@ -1074,7 +1054,7 @@ class MainActivity : AppCompatActivity() {
                 }
             ),
             MenuItemData(
-                icon = "🪟",
+                iconRes = R.drawable.ic_security,
                 title = "JavaScript Popups",
                 subtitle = "Allow window.open popup windows",
                 isChecked = webPopupEnabled,
@@ -1088,21 +1068,21 @@ class MainActivity : AppCompatActivity() {
         )
 
         val devToolsSubItems = listOf(
-            MenuItemData(icon = "🔍", title = "Inspect Element", subtitle = "Click elements in live preview to inspect markup", action = { toggleDomInspector() }),
-            MenuItemData(icon = "💾", title = "Web Storage & Cookies", subtitle = "Inspect and clear localStorage, sessionStorage", action = { StorageInspectorDialog.show(this, preview) { render() } }),
-            MenuItemData(icon = "🔒", title = "Web API Permissions", subtitle = "Configure Geolocation, Camera/Mic, JS popups", isSubMenu = true, subItems = webPermissionsSubItems),
+            MenuItemData(iconRes = R.drawable.ic_search, title = "Inspect Element", subtitle = "Click elements in live preview to inspect markup", action = { toggleDomInspector() }),
+            MenuItemData(iconRes = R.drawable.ic_storage, title = "Web Storage & Cookies", subtitle = "Inspect and clear localStorage, sessionStorage", action = { StorageInspectorDialog.show(this, preview) { render() } }),
+            MenuItemData(iconRes = R.drawable.ic_security, title = "Web API Permissions", subtitle = "Configure Geolocation, Camera/Mic, JS popups", isSubMenu = true, subItems = webPermissionsSubItems),
         )
 
         // --- 7. Share & Server Sub-menu ---
         val shareServerSubItems = listOf(
-            MenuItemData(icon = "🌐", title = "Live Wi-Fi Server", subtitle = "Host website on local Wi-Fi with QR Code", action = { toggleLocalWebServer() }),
-            MenuItemData(icon = "📤", title = "Share as HTML", subtitle = "Share single bundled HTML file via intent", action = { shareHtml() }),
+            MenuItemData(iconRes = R.drawable.ic_wifi, title = "Live Wi-Fi Server", subtitle = "Host website on local Wi-Fi with QR Code", action = { toggleLocalWebServer() }),
+            MenuItemData(iconRes = R.drawable.ic_export, title = "Share as HTML", subtitle = "Share single bundled HTML file via intent", action = { shareHtml() }),
         )
 
         // --- 8. Settings & View Sub-menu ---
         val settingsViewSubItems = listOf(
             MenuItemData(
-                icon = "📐",
+                iconRes = R.drawable.ic_viewport,
                 title = "Side-by-side Layout",
                 subtitle = "Toggle split layout between vertical & horizontal",
                 isChecked = sideBySidePref,
@@ -1114,7 +1094,7 @@ class MainActivity : AppCompatActivity() {
                 },
             ),
             MenuItemData(
-                icon = "⚡",
+                iconRes = R.drawable.ic_play,
                 title = "Auto Run",
                 subtitle = "Automatically update live preview on typing",
                 isChecked = autoRun,
@@ -1126,28 +1106,28 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 },
             ),
-            MenuItemData(icon = "🖥️", title = "Fullscreen Preview", subtitle = "Expand preview to fill entire screen", action = { setFullscreen(true) }),
+            MenuItemData(iconRes = R.drawable.ic_expand, title = "Fullscreen Preview", subtitle = "Expand preview to fill entire screen", action = { setFullscreen(true) }),
         )
 
         val mainMenuItems = listOf(
             // 1. Project
-            MenuItemData(icon = "📁", title = "Project", subtitle = "Create, rename, import projects", isSubMenu = true, subItems = projectSubItems),
+            MenuItemData(iconRes = R.drawable.ic_folder, title = "Project", subtitle = "Create, rename, import projects", isSubMenu = true, subItems = projectSubItems),
             // 2. Export
-            MenuItemData(icon = "📤", title = "Export", subtitle = "Export project as ZIP, HTML, or files", isSubMenu = true, subItems = exportSubItems),
+            MenuItemData(iconRes = R.drawable.ic_export, title = "Export", subtitle = "Export project as ZIP, HTML, or files", isSubMenu = true, subItems = exportSubItems),
             // 3. Templates
-            MenuItemData(icon = "📑", title = "Templates", subtitle = "Starter templates & saved custom templates", isSubMenu = true, subItems = templateSubItems),
+            MenuItemData(iconRes = R.drawable.ic_template, title = "Templates", subtitle = "Starter templates & saved custom templates", isSubMenu = true, subItems = templateSubItems),
             // 4. Reset Code
-            MenuItemData(icon = "🔄", title = "Reset Code", subtitle = "Reset HTML, CSS, JS to default code", action = { confirmReplace { loadTemplate(Templates.default) } }),
+            MenuItemData(iconRes = R.drawable.ic_reset, title = "Reset Code", subtitle = "Reset HTML, CSS, JS to default code", action = { confirmReplace { loadTemplate(Templates.default) } }),
             // 5. Code Tools
-            MenuItemData(icon = "🛠️", title = "Code Tools", subtitle = "Format, Find & Replace, Emmet, Color Picker", isSubMenu = true, subItems = codeToolsSubItems),
+            MenuItemData(iconRes = R.drawable.ic_code, title = "Code Tools", subtitle = "Format, Find & Replace, Emmet, Color Picker", isSubMenu = true, subItems = codeToolsSubItems),
             // 6. Design & Assets
-            MenuItemData(icon = "🎨", title = "Design & Assets", subtitle = "CSS Generator, CDN Libraries, Images", isSubMenu = true, subItems = designSubItems),
+            MenuItemData(iconRes = R.drawable.ic_palette, title = "Design & Assets", subtitle = "CSS Generator, CDN Libraries, Images", isSubMenu = true, subItems = designSubItems),
             // 7. DevTools & Debug
-            MenuItemData(icon = "⚡", title = "DevTools & Debug", subtitle = "DOM Inspector, Storage, Permissions", isSubMenu = true, subItems = devToolsSubItems),
+            MenuItemData(iconRes = R.drawable.ic_bug, title = "DevTools & Debug", subtitle = "DOM Inspector, Storage, Permissions", isSubMenu = true, subItems = devToolsSubItems),
             // 8. Share & Server
-            MenuItemData(icon = "🌐", title = "Share & Server", subtitle = "Wi-Fi Server, QR Code, HTML sharing", isSubMenu = true, subItems = shareServerSubItems),
+            MenuItemData(iconRes = R.drawable.ic_wifi, title = "Share & Server", subtitle = "Wi-Fi Server, QR Code, HTML sharing", isSubMenu = true, subItems = shareServerSubItems),
             // 9. Settings & View
-            MenuItemData(icon = "⚙️", title = "Settings & View", subtitle = "Side-by-side, Auto run, Fullscreen", isSubMenu = true, subItems = settingsViewSubItems),
+            MenuItemData(iconRes = R.drawable.ic_settings, title = "Settings & View", subtitle = "Side-by-side, Auto run, Fullscreen", isSubMenu = true, subItems = settingsViewSubItems),
         )
 
         MainMenuDialog.show(this, mainMenuItems)

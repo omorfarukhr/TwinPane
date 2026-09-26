@@ -62,6 +62,9 @@ class CodeEditText @JvmOverloads constructor(
     }
 
     init {
+        typeface = Typeface.MONOSPACE
+        textSize = 14f
+        letterSpacing = 0.02f
         setPadding((gutterWidth + (10 * density)).toInt(), paddingTop, paddingRight, paddingBottom)
         setHorizontallyScrolling(false)
     }

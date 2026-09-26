@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
@@ -19,7 +20,7 @@ import java.util.ArrayDeque
 data class MenuItemData(
     val title: String,
     val subtitle: String? = null,
-    val icon: String? = null,
+    val iconRes: Int? = null,
     val isSubMenu: Boolean = false,
     val isChecked: Boolean? = null,
     val subItems: List<MenuItemData>? = null,
@@ -181,13 +182,18 @@ object MainMenuDialog {
                 setBackgroundResource(ripple)
             }
 
-            if (!item.icon.isNullOrBlank()) {
-                val iconTv = TextView(context).apply {
-                    text = item.icon
-                    textSize = 18f
-                    setPadding(0, 0, dp(12), 0)
+            if (item.iconRes != null) {
+                val iconView = ImageView(context).apply {
+                    setImageResource(item.iconRes)
+                    setColorFilter(ContextCompat.getColor(context, R.color.accent))
+                    setPadding(dp(6), dp(6), dp(6), dp(6))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_symbol_key)
+                    val p = LinearLayout.LayoutParams(dp(36), dp(36)).apply {
+                        setMargins(0, 0, dp(12), 0)
+                    }
+                    layoutParams = p
                 }
-                container.addView(iconTv)
+                container.addView(iconView)
             }
 
             val infoLayout = LinearLayout(context).apply {

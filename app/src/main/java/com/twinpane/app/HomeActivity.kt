@@ -183,10 +183,15 @@ class HomeActivity : AppCompatActivity() {
                 }
                 layoutParams = params
 
-                val icon = TextView(context).apply {
-                    text = "🌐"
-                    textSize = 18f
-                    setPadding(0, 0, dp(12), 0)
+                val icon = ImageView(context).apply {
+                    setImageResource(R.drawable.ic_code)
+                    setColorFilter(ContextCompat.getColor(context, R.color.accent))
+                    setPadding(dp(6), dp(6), dp(6), dp(6))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_symbol_key)
+                    val p = LinearLayout.LayoutParams(dp(36), dp(36)).apply {
+                        setMargins(0, 0, dp(12), 0)
+                    }
+                    layoutParams = p
                 }
 
                 val info = LinearLayout(context).apply {
@@ -255,7 +260,7 @@ class HomeActivity : AppCompatActivity() {
                 isFocusable = true
 
                 val badge = TextView(context).apply {
-                    text = if (tmpl in customTemplates) "⭐ Custom" else "📑 Template"
+                    text = if (tmpl in customTemplates) "CUSTOM" else "STARTER"
                     textSize = 10f
                     setTextColor(ContextCompat.getColor(context, R.color.accent_2))
                 }
@@ -277,7 +282,7 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 val actionTv = TextView(context).apply {
-                    text = "Use Starter →"
+                    text = "Use Starter"
                     textSize = 11f
                     setTextColor(ContextCompat.getColor(context, R.color.accent))
                 }
@@ -300,9 +305,9 @@ class HomeActivity : AppCompatActivity() {
 
     private fun showImportOptionsDialog() {
         val items = listOf(
-            CustomListItem("📄", "Import Single HTML File", "Select a standalone .html file") { openEditor(action = "IMPORT_SINGLE") },
-            CustomListItem("📁", "Import HTML + CSS + JS Files", "Select multiple .html, .css, .js files") { openEditor(action = "IMPORT_FILES") },
-            CustomListItem("📦", "Import ZIP Project Archive", "Extract and load a .zip project") { openEditor(action = "IMPORT_ZIP") },
+            CustomListItem(title = "Import Single HTML File", subtitle = "Select a standalone .html file", iconRes = R.drawable.ic_file) { openEditor(action = "IMPORT_SINGLE") },
+            CustomListItem(title = "Import HTML + CSS + JS Files", subtitle = "Select multiple .html, .css, .js files", iconRes = R.drawable.ic_folder) { openEditor(action = "IMPORT_FILES") },
+            CustomListItem(title = "Import ZIP Project Archive", subtitle = "Extract and load a .zip project", iconRes = R.drawable.ic_zip) { openEditor(action = "IMPORT_ZIP") },
         )
         DialogUiHelper.showCustomListDialog(this, "Import Code / Project", items)
     }
@@ -321,23 +326,11 @@ class HomeActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.toolCdn).setOnClickListener {
-            val iconMap = mapOf(
-                "Bootstrap 5.3" to "🅱️",
-                "Tailwind CSS (CDN)" to "🎨",
-                "Font Awesome 6" to "🅰️",
-                "Animate.css" to "✨",
-                "Google Fonts (Poppins)" to "🔤",
-                "jQuery 3.7" to "💛",
-                "Vue.js 3" to "💚",
-                "Chart.js" to "📊",
-                "SweetAlert2" to "🔔",
-            )
             val items = CdnLibraries.items.map { item ->
-                val icon = iconMap[item.name] ?: "📦"
                 CustomListItem(
-                    icon = icon,
                     title = item.name,
                     subtitle = item.description,
+                    iconRes = R.drawable.ic_code,
                     action = {
                         val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
                         val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)

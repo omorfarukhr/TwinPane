@@ -90,7 +90,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/accent"
                 android:text="@string/btn_new_project"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="13sp" />
 
             <Button
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="monospace"
             android:letterSpacing="0.08"
             android:text="RECENT PROJECTS"
             android:textColor="@color/text_secondary"
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="monospace"
             android:letterSpacing="0.08"
             android:text="STARTER KITS &amp; TEMPLATES"
             android:textColor="@color/text_secondary"
@@ -165,7 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="monospace"
             android:letterSpacing="0.08"
             android:text="QUICK WEB TOOLS"
             android:textColor="@color/text_secondary"
@@ -188,12 +188,20 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_palette"
+                    app:tint="@color/accent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🎨 CSS Generator"
+                    android:text="CSS Generator"
                     android:textColor="@color/text"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -208,12 +216,20 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_code"
+                    app:tint="@color/accent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📦 CDN Libraries"
+                    android:text="CDN Libraries"
                     android:textColor="@color/text"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -236,12 +252,20 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_wifi"
+                    app:tint="@color/accent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🌐 Wi-Fi Server"
+                    android:text="Wi-Fi Server"
                     android:textColor="@color/text"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -256,12 +280,20 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_storage"
+                    app:tint="@color/accent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💾 Storage Inspector"
+                    android:text="Storage Inspector"
                     android:textColor="@color/text"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -317,7 +349,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="monospace"
                 android:text="@string/github_banner_star"
                 android:textColor="@color/warn"
                 android:textSize="13sp"

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
@@ -16,9 +17,10 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 data class CustomListItem(
-    val icon: String,
     val title: String,
     val subtitle: String? = null,
+    val iconRes: Int? = null,
+    val badgeText: String? = null,
     val action: (() -> Unit)? = null,
 )
 
@@ -109,10 +111,18 @@ object DialogUiHelper {
                 setBackgroundResource(ripple)
             }
 
-            val iconTv = TextView(context).apply {
-                text = item.icon
-                textSize = 18f
-                setPadding(0, 0, dp(12), 0)
+            if (item.iconRes != null) {
+                val iconView = ImageView(context).apply {
+                    setImageResource(item.iconRes)
+                    setColorFilter(ContextCompat.getColor(context, R.color.accent))
+                    setPadding(dp(6), dp(6), dp(6), dp(6))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_symbol_key)
+                    val p = LinearLayout.LayoutParams(dp(36), dp(36)).apply {
+                        setMargins(0, 0, dp(12), 0)
+                    }
+                    layoutParams = p
+                }
+                card.addView(iconView)
             }
 
             val info = LinearLayout(context).apply {
@@ -137,9 +147,19 @@ object DialogUiHelper {
                     addView(subTv)
                 }
             }
-
-            card.addView(iconTv)
             card.addView(info)
+
+            if (!item.badgeText.isNullOrBlank()) {
+                val badgeTv = TextView(context).apply {
+                    text = item.badgeText
+                    textSize = 11f
+                    setTextColor(ContextCompat.getColor(context, R.color.accent_2))
+                    setPadding(dp(8), dp(4), dp(8), dp(4))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_symbol_key)
+                }
+                card.addView(badgeTv)
+            }
+
             return card
         }
     }
