@@ -1,11 +1,13 @@
 package com.twinpane.app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -45,16 +47,36 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
-        findViewById<ImageButton>(R.id.btnTheme).setOnClickListener { ThemeManager.showThemeSelectionDialog(this) }
-        findViewById<ImageButton>(R.id.btnAbout).setOnClickListener { showAboutDialog() }
-        findViewById<Button>(R.id.btnNewProject).setOnClickListener { promptNewProject() }
-        findViewById<Button>(R.id.btnOpenSandbox).setOnClickListener { openEditor(action = "OPEN_PROJECT", projectName = "Quick Sandbox") }
-        findViewById<Button>(R.id.btnImport).setOnClickListener { showImportOptionsDialog() }
-        findViewById<View>(R.id.githubCard).setOnClickListener { openGitHubRepo() }
+        findViewById<ImageButton>(R.id.btnTheme).setBounceClickListener { ThemeManager.showThemeSelectionDialog(this) }
+        findViewById<ImageButton>(R.id.btnAbout).setBounceClickListener { showAboutDialog() }
+        findViewById<View>(R.id.btnNewProject).setBounceClickListener { promptNewProject() }
+        findViewById<View>(R.id.btnOpenSandbox).setBounceClickListener { openEditor(action = "OPEN_PROJECT", projectName = "Quick Sandbox") }
+        findViewById<View>(R.id.btnImport).setBounceClickListener { showImportOptionsDialog() }
+        findViewById<View>(R.id.githubCard).setBounceClickListener { openGitHubRepo() }
 
         setupQuickTools()
         renderRecentProjects()
         renderTemplates()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun View.setBounceClickListener(action: () -> Unit) {
+        setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(80).start()
+                }
+                MotionEvent.ACTION_UP -> {
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).withEndAction {
+                        action()
+                    }.start()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start()
+                }
+            }
+            true
+        }
     }
 
     companion object {
@@ -316,7 +338,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupQuickTools() {
-        findViewById<View>(R.id.toolCssGen).setOnClickListener {
+        findViewById<View>(R.id.toolCssGen).setBounceClickListener {
             CssGenerator.showDialog(this) { css ->
                 val curName = getProjects().firstOrNull() ?: "TwinPane Workspace"
                 val projPrefs = getSharedPreferences("twinpane_code", MODE_PRIVATE)
@@ -328,7 +350,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<View>(R.id.toolCdn).setOnClickListener {
+        findViewById<View>(R.id.toolCdn).setBounceClickListener {
             val items = CdnLibraries.items.map { item ->
                 CustomListItem(
                     title = item.name,
@@ -348,11 +370,11 @@ class HomeActivity : AppCompatActivity() {
             DialogUiHelper.showCustomListDialog(this, "Add Library (CDN)", items)
         }
 
-        findViewById<View>(R.id.toolServer).setOnClickListener {
+        findViewById<View>(R.id.toolServer).setBounceClickListener {
             toggleServerOnDashboard()
         }
 
-        findViewById<View>(R.id.toolStorage).setOnClickListener {
+        findViewById<View>(R.id.toolStorage).setBounceClickListener {
             openEditor(action = "STORAGE")
         }
     }
