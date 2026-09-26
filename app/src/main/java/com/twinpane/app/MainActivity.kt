@@ -192,6 +192,7 @@ class MainActivity : AppCompatActivity() {
         autoRun = prefs.getBoolean("auto_run", true)
         sideBySidePref = prefs.getBoolean("side_by_side", false)
         splitRatio = prefs.getFloat("split_ratio", 0.5f)
+        invalidateOptionsMenu()
 
         // SECURITY: শুধু debug build-এ WebView inspect করা যাবে
         WebView.setWebContentsDebuggingEnabled(isDebuggable())
@@ -539,6 +540,13 @@ class MainActivity : AppCompatActivity() {
         runtimeProblems.clear()
         runLint()
         preview?.loadDataWithBaseURL(SANDBOX_URL, buildHtml(), "text/html", "UTF-8", null)
+
+        // Pulse Live Dot indicator to visually show active rendering
+        findViewById<View>(R.id.liveDot)?.let { dot ->
+            dot.animate().scaleX(1.8f).scaleY(1.8f).setDuration(150).withEndAction {
+                dot.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
+            }.start()
+        }
     }
 
     // SECURITY: console log-এর size সীমিত
@@ -903,6 +911,15 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_redo)?.let {
             it.isEnabled = history.canRedo
             it.icon?.mutate()?.alpha = if (it.isEnabled) 255 else 80
+        }
+        menu.findItem(R.id.action_run)?.let { item ->
+            if (autoRun) {
+                item.icon?.mutate()?.setTint(ContextCompat.getColor(this, R.color.accent))
+                item.title = "Live Auto-Run Active (Tap to Reload)"
+            } else {
+                item.icon?.mutate()?.setTint(ContextCompat.getColor(this, R.color.text))
+                item.title = "Run Preview"
+            }
         }
         return super.onPrepareOptionsMenu(menu)
     }
