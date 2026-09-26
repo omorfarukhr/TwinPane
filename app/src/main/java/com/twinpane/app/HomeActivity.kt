@@ -104,19 +104,9 @@ class HomeActivity : AppCompatActivity() {
                 gravity = Gravity.CENTER
             }
 
-            val btnTheme = Button(this@HomeActivity).apply {
-                text = "Switch App Theme"
-                textSize = 12f
-                setTextColor(ContextCompat.getColor(context, R.color.accent))
-                setOnClickListener {
-                    ThemeManager.showThemeSelectionDialog(this@HomeActivity)
-                }
-            }
-
             addView(logo)
             addView(title)
             addView(version)
-            addView(btnTheme)
         }
 
         MaterialAlertDialogBuilder(this)
