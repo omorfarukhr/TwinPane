@@ -59,6 +59,20 @@ object MainMenuDialog {
             layoutParams = params
         }
 
+        val btnTheme = ImageButton(context).apply {
+            setImageResource(R.drawable.ic_theme)
+            setBackgroundResource(rippleBorderless)
+            setColorFilter(ContextCompat.getColor(context, R.color.text))
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            val params = LinearLayout.LayoutParams(dp(36), dp(36)).apply {
+                setMargins(0, 0, dp(4), 0)
+            }
+            layoutParams = params
+            setOnClickListener {
+                ThemeManager.showThemeSelectionDialog(context)
+            }
+        }
+
         val btnClose = ImageButton(context).apply {
             setImageResource(R.drawable.ic_close)
             setBackgroundResource(rippleBorderless)
@@ -73,6 +87,7 @@ object MainMenuDialog {
             setPadding(dp(12), dp(12), dp(12), dp(12))
             addView(btnBack)
             addView(tvTitle)
+            addView(btnTheme)
             addView(btnClose)
         }
 
@@ -88,6 +103,7 @@ object MainMenuDialog {
 
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
+            setBackgroundColor(ContextCompat.getColor(context, R.color.bg))
             addView(headerLayout)
             addView(divider)
             addView(listView)
@@ -96,6 +112,11 @@ object MainMenuDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setView(root)
             .create()
+
+        btnTheme.setOnClickListener {
+            dialog.dismiss()
+            ThemeManager.showThemeSelectionDialog(context)
+        }
 
         fun updateUI() {
             val (currentTitle, currentItems) = stack.peek() ?: ("Menu" to emptyList())
@@ -179,7 +200,7 @@ object MainMenuDialog {
                 val ripple = TypedValue().also {
                     context.theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
                 }.resourceId
-                setBackgroundResource(ripple)
+                foreground = ContextCompat.getDrawable(context, ripple)
             }
 
             if (item.iconRes != null) {

@@ -23,11 +23,6 @@
         android:title="Run"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_theme"
-        android:icon="@drawable/ic_theme"
-        android:title="Theme"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_main_menu"
         android:icon="@drawable/ic_menu_overflow"
         android:title="@string/action_main_menu"

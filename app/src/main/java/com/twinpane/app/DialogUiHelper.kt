@@ -59,6 +59,7 @@ object DialogUiHelper {
 
         val listView = ListView(context).apply {
             dividerHeight = 0
+            setBackgroundColor(ContextCompat.getColor(context, R.color.bg))
             setPadding(dp(12), dp(8), dp(12), dp(12))
             adapter = CustomListAdapter(context, items)
         }
@@ -108,7 +109,7 @@ object DialogUiHelper {
                 val ripple = TypedValue().also {
                     context.theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
                 }.resourceId
-                setBackgroundResource(ripple)
+                foreground = ContextCompat.getDrawable(context, ripple)
             }
 
             if (item.iconRes != null) {
