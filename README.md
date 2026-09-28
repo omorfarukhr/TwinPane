@@ -10,9 +10,9 @@
 
 ## 📸 Screenshots
 
-| Editor | Live Preview | DevTools |
+| Home | Editor & Live Preview | DevTools |
 |---|---|---|
-| ![Editor](docs/screenshots/editor.png) | ![Preview](docs/screenshots/preview.png) | ![DevTools](docs/screenshots/devtools.png) |
+| ![Home](docs/screenshots/home.jpg) | ![Editor](docs/screenshots/editor.jpg) | ![DevTools](docs/screenshots/devtools.jpg) |
 
 ## ⬇️ Download
 
